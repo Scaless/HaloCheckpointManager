@@ -413,3 +413,6 @@ MigrationBackup/
 FodyWeavers.xsd
 >>>>>>> Add .gitattributes and .gitignore.
 /HCMInternal/Beatrice.wav
+
+# VCPKG
+vcpkg_installed/

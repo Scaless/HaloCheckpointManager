@@ -84,12 +84,13 @@
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
-    <VcpkgTriplet>x64-windows-static</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
-    <VcpkgTriplet>x64-windows-static</VcpkgTriplet>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,24 +145,19 @@
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
       <PreprocessToFile>false</PreprocessToFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;libcurl.lib;version.lib;Ws2_32.lib;Wldap32.Lib;Crypt32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\x64-windows-static\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;libcurl-d.lib;version.lib;Ws2_32.lib;Wldap32.Lib;Crypt32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <PreBuildEvent>
-      <Command>set /P "_VSdmy=$(OutputPath.Replace('"','').trim().Replace('\','\\').trim().trimEnd('\'))" &lt;nul&gt;; "$(SolutionDir)OutputPath.vsmacro" ||(call,)
-
-IF EXIST "C:\Program Files\LockHunter\LockHunter.exe"  (
-	"C:\Program Files\LockHunter\LockHunter.exe" /silent /unlock  "$(SolutionDir)HCMExternal\bin\$(Platform)\$(Configuration)\net7.0-windows\HCMInternal.pdb"
-                   "C:\Program Files\LockHunter\LockHunter.exe" /silent /unlock  "$(SolutionDir)HCMExternal\bin\$(Platform)\$(Configuration)\net7.0-windows\HCMSpeedhack.pdb"
-)</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -172,7 +168,7 @@ IF EXIST "C:\Program Files\LockHunter\LockHunter.exe"  (
       </Command>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>xcopy /y $(ProjectDir)InternalPointerData.xml  $(OutDir)InternalPointerData.xml</Command>
+      <Command>echo F | xcopy /Y /F $(ProjectDir)InternalPointerData.xml  $(OutDir)InternalPointerData.xml</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copying internal pointer data</Message>
@@ -199,6 +195,7 @@ IF EXIST "C:\Program Files\LockHunter\LockHunter.exe"  (
       </ForcedIncludeFiles>
       <PreprocessToFile>false</PreprocessToFile>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -207,18 +204,12 @@ IF EXIST "C:\Program Files\LockHunter\LockHunter.exe"  (
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>d3d11.lib;libcurl.lib;version.lib;Ws2_32.lib;Wldap32.Lib;Crypt32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VcpkgRoot)\installed\x64-windows-static\lib;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PreBuildEvent>
-      <Command>set /P "_VSdmy=$(OutputPath.Replace('"','').trim().Replace('\','\\').trim().trimEnd('\'))" &lt;nul&gt;; "$(SolutionDir)OutputPath.vsmacro" ||(call,)
-
-IF EXIST "C:\Program Files\LockHunter\LockHunter.exe"  (
-	"C:\Program Files\LockHunter\LockHunter.exe" /silent /unlock  "$(SolutionDir)HCMExternal\bin\$(Platform)\$(Configuration)\net7.0-windows\HCMInternal.pdb"
-                   "C:\Program Files\LockHunter\LockHunter.exe" /silent /unlock  "$(SolutionDir)HCMExternal\bin\$(Platform)\$(Configuration)\net7.0-windows\HCMSpeedhack.pdb"
-)
-</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>

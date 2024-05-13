@@ -1,0 +1,28 @@
+{
+    "name": "hcm",
+    "version-string": "1.0",
+    "dependencies": [
+		"plog",
+		"openssl",
+		"ms-gsl",
+		"eventpp",
+		{
+			"name": "imgui",
+			"features": ["dx11-binding", "win32-binding"]
+		},
+		"pugixml",
+		{ 
+			"name": "curl",
+			"features": ["non-http", "schannel", "ssl", "sspi"]
+		},
+		"boost-stacktrace",
+		"boost-interprocess",
+		"boost-algorithm",
+		"boost-iostreams",
+		"boost-assign",
+		"boost-bimap",
+		"magic-enum",
+		"directxtk",
+		"rpclib"
+    ]
+}
