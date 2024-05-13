@@ -32,8 +32,10 @@ void throwOnDuplicateName(pugi::xml_document& doc)
 					throw HCMSerialisationException(std::format("Non-unique setting name \"{}\"! Burnt made an oopsie", child.name()));
 				}
 			}
+
+			return true;
 		}
-	}walker;
+	} walker;
 	doc.traverse(walker);
 }
 

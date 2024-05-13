@@ -14,8 +14,6 @@ ID3D11ShaderResourceView* textureView;
 // Simple helper function to load an image into a DX11 texture with common settings
 void LoadTextureFromMemory(int ID, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, int* out_width, int* out_height)
 {
-
-	BOOL bRtn;
 	LPVOID lpRes;
 	HRSRC hResInfo;
 	HGLOBAL hRes;
@@ -155,7 +153,7 @@ void Renderer2D::render(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceConte
 		DirectX::FXMVECTOR tintColour {1.f, 1.f, 1.f, 0.0024f};
 		spriteBatch->Begin(SpriteSortMode_Immediate, commonStates->NonPremultiplied(), nullptr, nullptr, nullptr);
 		//spriteBatch->Begin();
-		RECT surface{ 0,0, ss.x, ss.y };
+		RECT surface{ 0,0, static_cast<LONG>(ss.x), static_cast<LONG>(ss.y)};
 		spriteBatch->Draw(textureView, surface, tintColour);
 
 		//const XMFLOAT2 zero = { 0,0 };

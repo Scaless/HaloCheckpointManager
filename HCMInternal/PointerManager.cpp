@@ -6,11 +6,13 @@
 #include "MultilevelPointer.h"
 #include "MidhookContextInterpreter.h"
 #include "MidhookFlagInterpreter.h"
-#define useDevPointerData 1
+
 #define debugPointerManager 1
 
-#ifndef HCM_DEBUG // don't use dev pointer data in release
-#define useDevPointerData 0
+#ifdef HCM_DEBUG 
+#define useDevPointerData 1
+#else
+#define useDevPointerData 0 // don't use dev pointer data in release
 #endif
 
 typedef std::tuple<std::string, std::optional<GameState>> DataKey;
@@ -906,7 +908,7 @@ void PointerManager::PointerManagerImpl::instantiateDynStructOffsetInfo(pugi::xm
     {
         std::string fieldName = locationEntry.name();
         std::string offsetText = locationEntry.text().as_string(); //capitalised strings since I can't be bothered undoing from HCM2 pointerdata
-        int offset = stringToInt(offsetText);
+        int offset = static_cast<int>(stringToInt(offsetText));
 
         PLOG_VERBOSE << "fieldName: " << fieldName;
         PLOG_VERBOSE << "offset: " << offset;

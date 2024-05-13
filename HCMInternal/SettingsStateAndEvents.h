@@ -260,8 +260,8 @@ public:
 
 	std::shared_ptr<Setting<double>> speedhackSetting = std::make_shared<Setting<double>>
 	(
-		10.f,
-		[](float in) { return in > 0; }, // must be positive
+		10.0,
+		[](double in) { return in > 0.0; }, // must be positive
 		nameof(speedhackSetting)
 	);
 
@@ -699,7 +699,7 @@ public:
 
 	std::shared_ptr<Setting<SimpleMath::Vector2>> editPlayerViewAngleVec2 = std::make_shared<Setting<SimpleMath::Vector2>>
 		(
-			SimpleMath::Vector2(4.20, 0.69), // gottem
+			SimpleMath::Vector2(4.20f, 0.69f), // gottem
 			[](SimpleMath::Vector2 in) { return (in.x >= 0.f) && (in.x < DirectX::XM_2PI) && (in.y < DirectX::XM_PIDIV2) && (in.y > (DirectX::XM_PIDIV2 * -1.f)); }, // x (yaw) must be from 0 to 6.14, y (pitch) must be from -1.57 to 1.57
 			nameof(editPlayerViewAngleVec2)
 		);

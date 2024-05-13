@@ -28,7 +28,7 @@ public:
 				
 		}
 
-		currentHeight = radioButtonCount * 20;
+		currentHeight = radioButtonCount * 20.0f;
 	}
 
 	std::string_view getName() override { return mDebugName; }

@@ -182,7 +182,7 @@ private:
 			{
 				LOG_ONCE(PLOG_VERBOSE << "adjusting frameDelta by speedhack multiplier");
 				lockOrThrow(speedhackWeak, speedhack);
-				frameDelta = frameDelta * (1.00 / speedhack->getCurrentSpeedMultiplier());
+				frameDelta = frameDelta * static_cast<float>(1.00 / speedhack->getCurrentSpeedMultiplier());
 				LOG_ONCE_CAPTURE(PLOG_VERBOSE << "speedhack-adjusted frameDelta value: " << fd, fd = frameDelta);
 			}
 

@@ -24,10 +24,10 @@ void HCMInternalGUI::adjustWindowPosition()
 		float currentExtraWidth = mFullScreenSize.x - widthIf16to9;
 		PLOG_DEBUG << "currentExtraWidth: " << currentExtraWidth;
 
-		constexpr float magicAdjustmentFactor = 0.6;
+		constexpr float magicAdjustmentFactor = 0.6f;
 
 
-		float delta = currentExtraWidth * 0.5;// halve it since each side gets half the extra width
+		float delta = currentExtraWidth * 0.5f;// halve it since each side gets half the extra width
 		delta = delta * magicAdjustmentFactor; // idk
 
 		mWindowPos = SimpleMath::Vector2(10 + delta, 25);
@@ -179,10 +179,13 @@ void HCMInternalGUI::primaryRender()
 	std::unique_lock<std::mutex> lock(currentGameGUIElementsMutex);
 	// Calculate height of everything
 	int totalContentHeight = 0;
+
+	float elementHeight = 0.0f;
 	for (auto& element : *p_currentGameGUIElements)
 	{
-		totalContentHeight += element->getCurrentHeight();
+		elementHeight += element->getCurrentHeight();
 	}
+	totalContentHeight += static_cast<int>(elementHeight);
 
 	totalContentHeight += 25; // some padding for.. actually I'm not sure why
 	totalContentHeight += GUIFrameHeightWithSpacing; // for header

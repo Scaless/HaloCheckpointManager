@@ -40,5 +40,6 @@ public:
 	{ 
 		if (toolTipStrings.contains(game))
 			return toolTipStrings.at(game);
+		return "";
 	}
 };

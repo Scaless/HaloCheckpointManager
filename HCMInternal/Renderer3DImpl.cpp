@@ -25,8 +25,8 @@ SimpleMath::Vector3 Renderer3DImpl<mGame>::worldToScreen(SimpleMath::Vector3 wor
 	// convert from clipSpace (-1..+1) to screenSpace (0..Width, 0..Height)
 	auto out = SimpleMath::Vector3
 	(
-		(1.f + clipSpace.x) * 0.5 * this->screenSize.x,
-		(1.f - clipSpace.y) * 0.5 * this->screenSize.y,
+		(1.f + clipSpace.x) * 0.5f * this->screenSize.x,
+		(1.f - clipSpace.y) * 0.5f * this->screenSize.y,
 		clipSpace.z
 	);
 

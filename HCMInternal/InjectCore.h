@@ -148,7 +148,7 @@ private:
 			}
 
 			PLOG_DEBUG << "reading core save file";
-			int checkpointLength = checkpointFile.size();
+			size_t checkpointLength = checkpointFile.size();
 			std::vector<byte> checkpointData;
 			checkpointData.resize(checkpointLength);
 			auto err = memcpy_s(checkpointData.data(), checkpointLength, checkpointFile.data(), checkpointLength);

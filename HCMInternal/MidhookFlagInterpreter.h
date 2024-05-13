@@ -24,7 +24,7 @@ public:
 	// read value of flag
 	bool readFlag(SafetyHookContext& ctx)
 	{
-		return ctx.rflags & (1 << mRFlag);
+		return ctx.rflags & (1ULL << mRFlag);
 	}
 
 	// set value of flag
@@ -32,11 +32,11 @@ public:
 	{
 		if (value)
 		{
-			ctx.rflags |= (1 << mRFlag); // set flag to true
+			ctx.rflags |= (1ULL << mRFlag); // set flag to true
 		}
 		else
 		{
-			ctx.rflags &= ~(1 << mRFlag); // set flag to false
+			ctx.rflags &= ~(1ULL << mRFlag); // set flag to false
 		}
 	}
 
@@ -47,11 +47,11 @@ public:
 
 		if (valueToSet)
 		{
-			ctx.rflags |= (1 << mRFlag); // set flag to true
+			ctx.rflags |= (1ULL << mRFlag); // set flag to true
 		}
 		else
 		{
-			ctx.rflags &= ~(1 << mRFlag); // set flag to false
+			ctx.rflags &= ~(1ULL << mRFlag); // set flag to false
 		}
 	}
 

@@ -145,7 +145,7 @@ void HotkeyRendererImpl::renderHotkeyRebindDialog(SimpleMath::Vector2 screenSize
 		if (ImGui::Button("Add binding"))
 		{
 			tempBindingSet.push_back({}); // add empty binding
-			currentSelectedBindingForEditing = tempBindingSet.size() - 1; // make it the one selected for editing
+			currentSelectedBindingForEditing = static_cast<int>(tempBindingSet.size()) - 1; // make it the one selected for editing
 		}
 
 		if (ImGui::Button("Save"))

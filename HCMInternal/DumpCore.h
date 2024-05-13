@@ -103,7 +103,7 @@ private:
 				checkpointFile.close();
 				throw HCMRuntimeException(std::format("Core Save file was too small! expected at least: 0x{:X}, actual: 0x{:X}", minimumFileLength, checkpointFile.size()));
 			}
-			int checkpointLength = checkpointFile.size();
+			size_t checkpointLength = checkpointFile.size();
 			std::vector<byte> checkpointData;
 			checkpointData.resize(checkpointLength);
 			auto err = memcpy_s(checkpointData.data(), checkpointLength, checkpointFile.data(), checkpointLength);

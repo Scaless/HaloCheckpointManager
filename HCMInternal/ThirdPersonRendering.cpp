@@ -54,7 +54,7 @@ public:
 		auto ptr = dicon.Resolve<PointerManager>().lock();
 
 		auto thirdPersonRenderingFunction = ptr->getData<std::shared_ptr<MultilevelPointer>>(nameof(thirdPersonRenderingFunction), game);
-		thirdPersonRenderingValueToSet = *ptr->getData<std::shared_ptr<int64_t>>(nameof(thirdPersonRenderingValueToSet), game).get();
+		thirdPersonRenderingValueToSet = static_cast<int>(*ptr->getData<std::shared_ptr<int64_t>>(nameof(thirdPersonRenderingValueToSet), game).get());
 		thirdPersonRenderingHook = ModuleInlineHook::make(game.toModuleName(), thirdPersonRenderingFunction, thirdPersonRenderingHookFunction);
 
 	}

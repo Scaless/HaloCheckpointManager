@@ -23,7 +23,7 @@ public:
 
 		hasElements = !mChildElements.empty();
 
-		this->currentHeight = hasElements ? GUIFrameHeightWithSpacing : 0;
+		this->currentHeight = hasElements ? GUIFrameHeightWithSpacing : 0.0f;
 	}
 
 	void render(HotkeyRenderer& hotkeyRenderer) override
