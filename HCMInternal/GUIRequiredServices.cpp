@@ -271,6 +271,11 @@ const std::map <GUIElementEnum, std::vector<OptionalCheatEnum>> GUIRequiredServi
 {OptionalCheatEnum::FreeCamera}
 	},
 
+			{ GUIElementEnum::freeCameraTeleportToCamera,
+{OptionalCheatEnum::FreeCamera, OptionalCheatEnum::ForceTeleport}
+	},
+
+
 			{ GUIElementEnum::freeCameraSettingsSimpleSubheading,
 {OptionalCheatEnum::FreeCamera}
 	},
@@ -307,6 +312,23 @@ const std::map <GUIElementEnum, std::vector<OptionalCheatEnum>> GUIRequiredServi
 {OptionalCheatEnum::SetPlayerHealth}
 	},
 
+			{ GUIElementEnum::waypoint3DGUIToggle,
+{OptionalCheatEnum::Waypoint3D}
+			},
+
+			{ GUIElementEnum::waypoint3DGUIList,
+{OptionalCheatEnum::Waypoint3D}
+			},
+
+				{ GUIElementEnum::waypoint3DGUISettings,
+{OptionalCheatEnum::Waypoint3D}
+				},
+
+
+		{ GUIElementEnum::skullToggleGUI,
+{OptionalCheatEnum::SkullToggler}
+		},
+
 #ifdef HCM_DEBUG
 
 	{ GUIElementEnum::getObjectAddressGUI,
@@ -316,9 +338,9 @@ const std::map <GUIElementEnum, std::vector<OptionalCheatEnum>> GUIRequiredServi
 		{OptionalCheatEnum::ConsoleCommand}
 	},
 
-		{ GUIElementEnum::waypoint3DGUI,
-{OptionalCheatEnum::Waypoint3D}
-		},
+		{ GUIElementEnum::triggerOverlayToggle,
+		{OptionalCheatEnum::TriggerOverlay}
+	},
 
 #endif
 

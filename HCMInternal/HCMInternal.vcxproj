@@ -133,7 +133,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)includes\safetyhook;$(ProjectDir)includes;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)includes\safetyhook;$(ProjectDir)includes;$(ProjectDir)includes\geometric-tools</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -166,7 +166,7 @@
       </Command>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>echo F | xcopy /Y /F $(ProjectDir)InternalPointerData.xml  $(OutDir)InternalPointerData.xml</Command>
+      <Command>xcopy /y $(ProjectDir)InternalPointerData.xml  $(OutDir)InternalPointerData.xml || set errorlevel=0</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copying internal pointer data</Message>
@@ -182,7 +182,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)includes\safetyhook;$(ProjectDir)includes;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)includes\safetyhook;$(ProjectDir)includes;$(ProjectDir)includes\geometric-tools</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -217,9 +217,36 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BitBoolPointer.h" />
+    <ClInclude Include="CheckpointDumpNameDialog.h" />
+    <ClInclude Include="DirectXRenderEvent.h" />
+    <ClInclude Include="EditOrAddWaypointDialog.h" />
+    <ClInclude Include="FailedOptionalCheatServicesDialog.h" />
+    <ClInclude Include="GetTriggerData.h" />
+    <ClInclude Include="GUISkullToggle.h" />
+    <ClInclude Include="GUIWaypointList.h" />
+    <ClInclude Include="IModalDialog.h" />
+    <ClInclude Include="InjectionWarningDialog.h" />
     <ClInclude Include="IRenderer3D.h" />
+    <ClInclude Include="MeasurePlayerDistanceToObject.h" />
+    <ClInclude Include="ModalDialogFactory.h" />
+    <ClInclude Include="PointerDataGetter.h" />
+    <ClInclude Include="PointerDataParser.h" />
+    <ClInclude Include="PointerDataParserInstantiators.h" />
+    <ClInclude Include="PointerDataStore.h" />
     <ClInclude Include="Render3DEventProvider.h" />
     <ClInclude Include="Renderer3DImpl.h" />
+    <ClInclude Include="RenderTextHelper.h" />
+    <ClInclude Include="ScopedImFontScaler.h" />
+    <ClInclude Include="SerialisableSetting.h" />
+    <ClInclude Include="SkullEnum.h" />
+    <ClInclude Include="SkullToggler.h" />
+    <ClInclude Include="SpriteResource.h" />
+    <ClInclude Include="TriggerData.h" />
+    <ClInclude Include="TriggerModel.h" />
+    <ClInclude Include="TriggerOverlay.h" />
+    <ClInclude Include="UnarySetting.h" />
+    <ClInclude Include="UpdateTriggerLastChecked.h" />
     <ClInclude Include="WaypointList.h" />
     <ClInclude Include="Waypoint3D.h" />
     <ClInclude Include="AdvanceTicks.h" />
@@ -314,7 +341,6 @@
     <ClInclude Include="IMakeOrGetCheat.h" />
     <ClInclude Include="IMCCStateHook.h" />
     <ClInclude Include="IMessagesGUI.h" />
-    <ClInclude Include="IModalDialogRenderer.h" />
     <ClInclude Include="InfiniteAmmo.h" />
     <ClInclude Include="ISettingsSerialiser.h" />
     <ClInclude Include="ISharedMemory.h" />
@@ -389,14 +415,13 @@
     <ClInclude Include="ModuleHook.h" />
     <ClInclude Include="ModuleHookManager.h" />
     <ClInclude Include="MultilevelPointer.h" />
-    <ClInclude Include="Setting.h" />
+    <ClInclude Include="BinarySetting.h" />
     <ClInclude Include="OptionalCheatInfo.h" />
     <ClInclude Include="OptionalCheatManager.h" />
     <ClInclude Include="OptionalCheatEnum.h" />
     <ClInclude Include="SettingsSerialiser.h" />
     <ClInclude Include="SettingsStateAndEvents.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PointerManager.h" />
     <ClInclude Include="RuntimeExceptionHandler.h" />
     <ClInclude Include="Speedhack.h" />
     <ClInclude Include="ToolTipCollection.h" />
@@ -408,10 +433,28 @@
     <ClInclude Include="WinHandle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GetTriggerData.cpp" />
+    <ClCompile Include="MeasurePlayerDistanceToObject.cpp" />
+    <ClCompile Include="ModalDialogFactory.cpp" />
+    <ClCompile Include="PointerDataGetter.cpp" />
+    <ClCompile Include="PointerDataParser.cpp" />
+    <ClCompile Include="PointerDataStore.cpp" />
     <ClCompile Include="Render3DEventProvider.cpp" />
+    <ClCompile Include="Renderer3DImpl_RenderTriggers.cpp" />
+    <ClCompile Include="Renderer3DImpl_updateCameraData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Renderer3DImpl.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Renderer3DImpl_Sprites.cpp" />
+    <ClCompile Include="Renderer3DImpl_WorldToScreen.cpp" />
+    <ClCompile Include="RenderTextHelper.cpp" />
+    <ClCompile Include="SkullToggler.cpp" />
+    <ClCompile Include="SpriteResource.cpp" />
+    <ClCompile Include="TriggerOverlay.cpp" />
+    <ClCompile Include="UnarySetting.cpp" />
+    <ClCompile Include="UpdateTriggerLastChecked.cpp" />
     <ClCompile Include="Waypoint3D.cpp" />
     <ClCompile Include="AdvanceTicks.cpp" />
     <ClCompile Include="AIFreeze.cpp" />
@@ -497,7 +540,7 @@
     <ClCompile Include="NaturalCheckpointDisable.cpp" />
     <ClCompile Include="PauseGame.cpp" />
     <ClCompile Include="ProggyVectorRegularFont.cpp" />
-    <ClCompile Include="Setting.cpp" />
+    <ClCompile Include="BinarySetting.cpp" />
     <ClCompile Include="OptionalCheatManager.cpp" />
     <ClCompile Include="SettingsSerialiser.cpp" />
     <ClCompile Include="pch.cpp">
@@ -506,7 +549,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PointerManager.cpp" />
     <ClCompile Include="RuntimeExceptionHandler.cpp" />
     <ClCompile Include="SharedMemoryInternal.cpp" />
     <ClCompile Include="LinearSmoother.cpp" />
@@ -519,6 +561,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="dds2.bin" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HCMInternal.rc" />
@@ -526,6 +569,8 @@
   <ItemGroup>
     <Image Include="lapua.dds" />
     <Image Include="lapua2.dds" />
+    <Image Include="Waypoint3DReticle.dds" />
+    <Image Include="Waypoint3DReticle.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="lapua.wav" />

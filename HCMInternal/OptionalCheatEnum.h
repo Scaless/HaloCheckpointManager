@@ -60,7 +60,12 @@ HideHUD,\
 OBSBypassCheck,\
 SetPlayerHealth,\
 Waypoint3D,\
-Render3DEventProvider
+Render3DEventProvider,\
+MeasurePlayerDistanceToObject,\
+SkullToggler,\
+TriggerOverlay,\
+GetTriggerData,\
+UpdateTriggerLastChecked
 
 
 enum class OptionalCheatEnum {

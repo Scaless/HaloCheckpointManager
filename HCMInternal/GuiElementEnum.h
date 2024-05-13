@@ -44,7 +44,7 @@
 		((injectCheckpointLevelCheck, (ALL_SUPPORTED_GAMES)))\
 		((injectCheckpointVersionCheck, (ALL_SUPPORTED_GAMES)))\
 		((injectCheckpointDifficultyCheck, (ALL_SUPPORTED_GAMES)))\
-		((injectCheckpointIgnoresChecksum, (Halo3, Halo3ODST, HaloReach, Halo4)))\
+		((injectCheckpointIgnoresChecksum, (Halo1, Halo2, Halo3, Halo3ODST, HaloReach, Halo4)))\
 	((dumpCheckpointGUI, (ALL_SUPPORTED_GAMES)))\
 	((dumpCheckpointSettingsSubheading, (ALL_SUPPORTED_GAMES)))\
 		((dumpCheckpointAutonameGUI, (ALL_SUPPORTED_GAMES)))\
@@ -100,6 +100,7 @@
 	((setPlayerHealthSubheadingGUI, (ALL_SUPPORTED_GAMES)))\
 		((setPlayerHealthGUI, (ALL_SUPPORTED_GAMES)))\
 		((setPlayerHealthValueGUI, (ALL_SUPPORTED_GAMES)))\
+	((skullToggleGUI, (ALL_SUPPORTED_GAMES)))\
 ((overlaysHeadingGUI, (ALL_SUPPORTED_GAMES)))\
 	((display2DInfoToggleGUI, (ALL_SUPPORTED_GAMES)))\
 	((display2DInfoSettingsInfoSubheading, (ALL_SUPPORTED_GAMES)))\
@@ -137,6 +138,19 @@
 			((display2DInfoFontColour, (ALL_SUPPORTED_GAMES)))\
 			((display2DInfoFloatPrecision, (ALL_SUPPORTED_GAMES)))\
 			((display2DInfoOutline, (ALL_SUPPORTED_GAMES)))\
+	((waypoint3DGUIToggle, (ALL_SUPPORTED_GAMES)))\
+	((waypoint3DGUIList, (ALL_SUPPORTED_GAMES)))\
+	((waypoint3DGUISettings, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIClampToggle, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIRenderRangeToggle, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIRenderRangeInput, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalSpriteColor, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalSpriteScale, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalLabelColor, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalLabelScale, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalDistanceColor, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalDistanceScale, (ALL_SUPPORTED_GAMES)))\
+		((waypoint3DGUIGlobalDistancePrecision, (ALL_SUPPORTED_GAMES)))\
 ((cameraHeadingGUI, (ALL_SUPPORTED_GAMES)))\
 	((hideHUDToggle, (FREE_CAMERA_SUPPORT)))\
 	((editPlayerViewAngleSubheading, (ALL_SUPPORTED_GAMES)))\
@@ -151,6 +165,7 @@
 	((freeCameraToggleGUI, (FREE_CAMERA_SUPPORT)))\
 	((freeCameraSettingsSimpleSubheading, (FREE_CAMERA_SUPPORT)))\
 	((freeCameraSettingsAdvancedSubheading, (FREE_CAMERA_SUPPORT)))\
+		((freeCameraTeleportToCamera, (FREE_CAMERA_SUPPORT)))\
 		((freeCameraHideWatermark, (FREE_CAMERA_SUPPORT)))\
 		((freeCameraHideMessages, (FREE_CAMERA_SUPPORT)))\
 		((freeCameraThirdPersonRendering, (FREE_CAMERA_SUPPORT)))\
@@ -194,7 +209,8 @@
 ((debugHeadingGUI, (ALL_SUPPORTED_GAMES)))\
 	((consoleCommandGUI, (Halo1)))\
 	((getObjectAddressGUI, (ALL_SUPPORTED_GAMES)))\
-	((waypoint3DGUI, (ALL_SUPPORTED_GAMES)))
+	((triggerOverlayToggle, (ALL_SUPPORTED_GAMES)))
+
 
 
 #ifdef HCM_DEBUG

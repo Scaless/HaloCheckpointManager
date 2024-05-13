@@ -13,7 +13,7 @@ using HCMExternal.Services.CheckpointServiceNS;
 using HCMExternal.Views;
 using System.Diagnostics;
 using HCMExternal.Services.InterprocServiceNS;
-using HCMExternal.Services.MCCStateServiceNS;
+using HCMExternal.Services.MCCHookService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -57,15 +57,17 @@ namespace HCMExternal
             serviceCollection.AddSingleton<CheckpointViewModel>();
             serviceCollection.AddSingleton<MainViewModel>();
 
+
             // Services
-            serviceCollection.AddSingleton<MCCStateService>();
+            serviceCollection.AddSingleton<MCCHookService>();
             serviceCollection.AddSingleton<CheckpointService>();
             serviceCollection.AddSingleton<DataPointersService>();
             serviceCollection.AddSingleton<InterprocService>();
 
 
-
-
+            serviceCollection.AddSingleton<ErrorDialogViewModel>();
+            serviceCollection.AddSingleton<ErrorDialogView>();
+            serviceCollection.AddSingleton<MCCHookStateViewModel>();
 
 
 
@@ -157,9 +159,12 @@ namespace HCMExternal
             mainWindow.Title = "HaloCheckpointManager " + (this.CurrentHCMVersion.Length > 4 ? this.CurrentHCMVersion.Substring(0, 5) : this.CurrentHCMVersion);
             mainWindow.Show();
 
-            // Tell MCCStateService to begin trying to attach to MCC
-            var mccstate = _serviceProvider.GetService<MCCStateService>();
-            mccstate.beginAttaching();
+            //var errorDialog = _serviceProvider.GetService<ErrorDialogView>();
+            //errorDialog.DataContext = _serviceProvider.GetService<ErrorDialogViewModel>();
+
+            // Tell MCCHookService to begin trying to hook to MCC
+            var mcchook = _serviceProvider.GetService<MCCHookService>();
+            mcchook.BeginStateMachineLoop();
         }
 
 

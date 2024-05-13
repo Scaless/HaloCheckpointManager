@@ -3,7 +3,7 @@
 #include "SettingsStateAndEvents.h"
 #include "MultilevelPointer.h"
 #include "MidhookContextInterpreter.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "SettingsStateAndEvents.h"
 #include "Datum.h"
 #include "RuntimeExceptionHandler.h"
@@ -39,6 +39,7 @@ private:
 
 	void onForceLaunchEvent()
 	{
+		bool launchingPlayer = true;
 		try
 		{
 			lockOrThrow(mccStateHookWeak, mccStateHook);
@@ -54,31 +55,40 @@ private:
 			}
 			else
 			{
+				launchingPlayer = false;
 				datumToLaunch = settings->forceLaunchCustomObject->GetValue();
 			}
 			PLOG_INFO << "Launching object with datum: " << datumToLaunch;
+
+
+			// test for manual vs relative settings being in an invalid state (neither enabled or both enabled)
+			// In a valid state, xor ing the values will return true.
+			// If state invalid, we'll just set it to relative and display a message saying we fixed it.
+			if ((settings->forceLaunchManual->GetValue() ^ settings->forceLaunchForward->GetValue()) == false)
+			{
+				settings->forceLaunchManual->GetValueDisplay() = false;
+				settings->forceLaunchManual->UpdateValueWithInput();
+				settings->forceLaunchForward->GetValueDisplay() = true;
+				settings->forceLaunchForward->UpdateValueWithInput();
+				lockOrThrow(messagesGUIWeak, messagesGUI);
+				messagesGUI->addMessage("Force Launch radio button was in invalid state. \nHCM has set it to a valid state (relative)");
+			}
 
 
 			if (settings->forceLaunchManual->GetValue())
 			{
 				LaunchObjectAbsolute(settings->forceLaunchAbsoluteVec3->GetValue(), datumToLaunch);
 			}
-			else if (settings->forceLaunchForward->GetValue())
+			else
 			{
 				LaunchObjectRelativeToPlayer(settings->forceLaunchRelativeVec3->GetValue(), datumToLaunch);
 			}
-			else
-			{
-				throw HCMRuntimeException("forceLaunch settings were in an invalid state (neither enabled), try deleting HCMInternalConfig then restarting HCM");
-			}
+			
 
-			if (settings->forceLaunchForward->GetValue() && settings->forceLaunchManual->GetValue())
-			{
-				throw HCMRuntimeException("forceLaunch settings were in an invalid state (both enabled), try deleting HCMInternalConfig then restarting HCM");
-			}
 		}
 		catch (HCMRuntimeException ex)
 		{
+			ex.prepend((launchingPlayer ? "Error launching player: " : "Error launching custom object: "));
 			runtimeExceptions->handleMessage(ex);
 		}
 

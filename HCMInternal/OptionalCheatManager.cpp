@@ -63,6 +63,11 @@
 #include "SetPlayerHealth.h"
 #include "Waypoint3D.h"
 #include "Render3DEventProvider.h"
+#include "MeasurePlayerDistanceToObject.h"
+#include "SkullToggler.h"
+#include "TriggerOverlay.h"
+#include "GetTriggerData.h"
+#include "UpdateTriggerLastChecked.h"
 
 #include "DIContainer.h"
 #include "map.h"
@@ -85,27 +90,28 @@ private:
 	// This collection is the central owner keeping all the optional cheats alive until HCM shuts down. 
 		// Once the OptionalCheatManager goes out of scope in App.h, the OptionalCheatStore destructor will be called, this cheatCollection will be reset, and thus all the IOptionalCheats will in turn have their destructors called etc etc
 	std::shared_ptr<CheatCollection> cheatCollection = std::make_shared<CheatCollection>();
-	DIContainer<IMakeOrGetCheat, SettingsStateAndEvents, PointerManager, IGetMCCVersion, IMCCStateHook, ISharedMemory, IMessagesGUI, RuntimeExceptionHandler, DirPathContainer, IModalDialogRenderer, ControlServiceContainer, RenderEvent, HotkeyDefinitions> dicon;
+	DIContainer<IMakeOrGetCheat, SettingsStateAndEvents, PointerDataStore, IGetMCCVersion, IMCCStateHook, ISharedMemory, IMessagesGUI, RuntimeExceptionHandler, DirPathContainer, ModalDialogRenderer, ControlServiceContainer, RenderEvent, DirectXRenderEvent, HotkeyDefinitions> dicon;
 
 
 public:
 	OptionalCheatStore(std::shared_ptr<IMakeOrGetCheat> cheatConstructor, 
 		std::shared_ptr<SettingsStateAndEvents> settings,
-		std::shared_ptr<PointerManager> ptr,
+		std::shared_ptr<PointerDataStore> ptr,
 		std::shared_ptr<IGetMCCVersion> ver,
 		std::shared_ptr<IMCCStateHook> mccStateHook,
 		std::shared_ptr<ISharedMemory> sharedMem,
 		std::shared_ptr<IMessagesGUI> mes,
 		std::shared_ptr<RuntimeExceptionHandler> exp,
 		std::string dirPath,
-		std::shared_ptr<IModalDialogRenderer> modal,
+		std::shared_ptr<ModalDialogRenderer> modal,
 		std::shared_ptr<ControlServiceContainer> control,
 		std::shared_ptr<RenderEvent> overlayRenderEvent,
+		std::shared_ptr<DirectXRenderEvent> foregroundDirectXRenderEvent,
 		std::shared_ptr<HotkeyDefinitions> hotkeyDefinitions)
 		:
 		// Create a Dependency-Injection container with the dependencies that the cheats will need.
 		// Remember: you need to register types as the base interface the optionalCheats will want to resolve
-		dicon(cheatConstructor, settings, ptr, ver, mccStateHook, sharedMem, mes, exp, std::make_shared<DirPathContainer>(dirPath), modal, control, overlayRenderEvent, hotkeyDefinitions)
+		dicon(cheatConstructor, settings, ptr, ver, mccStateHook, sharedMem, mes, exp, std::make_shared<DirPathContainer>(dirPath), modal, control, overlayRenderEvent, foregroundDirectXRenderEvent, hotkeyDefinitions)
 	{ 
 		
 	}
@@ -203,21 +209,22 @@ public:
 OptionalCheatManager::OptionalCheatManager(std::shared_ptr<IGUIRequiredServices> reqSer, std::shared_ptr<OptionalCheatInfo> info,
 	/* rest is cheat construction stuff that will get stuffed into a DIContainer later*/
 	std::shared_ptr<SettingsStateAndEvents> settings,
-	std::shared_ptr<PointerManager> ptr, 
+	std::shared_ptr<PointerDataStore> ptr, 
 	std::shared_ptr<IGetMCCVersion> ver, 
 	std::shared_ptr<IMCCStateHook> mccStateHook, 
 	std::shared_ptr<ISharedMemory> sharedMem, 
 	std::shared_ptr<IMessagesGUI> mes, 
 	std::shared_ptr<RuntimeExceptionHandler> exp, 
 	std::string dirPath, 
-	std::shared_ptr<IModalDialogRenderer> modal,
+	std::shared_ptr<ModalDialogRenderer> modal,
 	std::shared_ptr<ControlServiceContainer> control,
 	std::shared_ptr<RenderEvent> overlayRenderEvent,
+	std::shared_ptr<DirectXRenderEvent> foregroundDirectXRenderEvent,
 	std::shared_ptr<HotkeyDefinitions> hotkeyDefinitions)
 	: constructorPimpl(std::make_shared<OptionalCheatConstructor>())
 
 {
-	storePimpl = std::make_shared<OptionalCheatStore>(constructorPimpl, settings, ptr, ver, mccStateHook, sharedMem, mes, exp, dirPath, modal, control, overlayRenderEvent, hotkeyDefinitions);
+	storePimpl = std::make_shared<OptionalCheatStore>(constructorPimpl, settings, ptr, ver, mccStateHook, sharedMem, mes, exp, dirPath, modal, control, overlayRenderEvent, foregroundDirectXRenderEvent, hotkeyDefinitions);
 
 	// Ah yes a cyclic dependency? But actually the storePimpl will go in as a weak ptr, and it doesn't keep it after the method finishes anyway
 	constructorPimpl->createCheats(storePimpl, reqSer, info);

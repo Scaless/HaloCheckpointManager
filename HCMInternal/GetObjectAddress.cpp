@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GetObjectAddress.h"
 #include "MultilevelPointer.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "MultilevelPointer.h"
 #include "IMCCStateHook.h"
 
@@ -61,7 +61,7 @@ public:
 		: mGame(game),
 			MCCStateChangedCallback(dicon.Resolve<IMCCStateHook>().lock()->getMCCStateChangedEvent(), [this](const MCCState& state) { onGameStateChange(state); })
 		{
-			auto ptr = dicon.Resolve<PointerManager>().lock();
+			auto ptr = dicon.Resolve<PointerDataStore>().lock();
 			objectMetaDataTable = ptr->getData<std::shared_ptr<MultilevelPointer>>(nameof(objectMetaDataTable), game);
 
 			objectHeaderStride = *ptr->getData<std::shared_ptr<int64_t>>(nameof(objectHeaderStride), game).get();
@@ -86,6 +86,7 @@ public:
 		auto ourObjectHeader = objectMetaDataTable_cached + (objectHeaderStride * entityDatum.index);
 
 		// first two bytes at object header are the salt.. confirm they match
+		if (IsBadReadPtr((void*)ourObjectHeader, 2)) throw HCMRuntimeException(std::format("Bad read at {}", ourObjectHeader));
 		return (*(uint16_t*)ourObjectHeader == entityDatum.salt);
 
 	}
@@ -175,7 +176,7 @@ public:
 		: mGame(game),
 		MCCStateChangedCallback(dicon.Resolve<IMCCStateHook>().lock()->getMCCStateChangedEvent(), [this](const MCCState& state) { onGameStateChange(state); })
 	{
-		auto ptr = dicon.Resolve<PointerManager>().lock();
+		auto ptr = dicon.Resolve<PointerDataStore>().lock();
 		objectMetaDataTable = ptr->getData<std::shared_ptr<MultilevelPointer>>(nameof(objectMetaDataTable), game);
 
 		objectHeaderStride = *ptr->getData<std::shared_ptr<int64_t>>(nameof(objectHeaderStride), game).get();

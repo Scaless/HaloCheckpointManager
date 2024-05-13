@@ -3,7 +3,7 @@
 #include "SettingsStateAndEvents.h"
 #include "MultilevelPointer.h"
 #include "MidhookContextInterpreter.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "SettingsStateAndEvents.h"
 #include "Datum.h"
 #include "RuntimeExceptionHandler.h"
@@ -42,6 +42,7 @@ private:
 
 	void onForceTeleportEvent()
 	{
+		bool teleportingPlayer = true;
 		try
 		{
 			lockOrThrow(mccStateHookWeak, mccStateHook);
@@ -57,31 +58,38 @@ private:
 			}
 			else
 			{
+				teleportingPlayer = false;
 				datumToTeleport = settings->forceTeleportCustomObject->GetValue();
 			}
 			PLOG_INFO << "Teleporting object with datum: " << datumToTeleport;
+
+			// test for manual vs relative settings being in an invalid state (neither enabled or both enabled)
+			// In a valid state, xor ing the values will return true.
+			// If state invalid, we'll just set it to relative and display a message saying we fixed it.
+			if ((settings->forceTeleportManual->GetValue() ^ settings->forceTeleportForward->GetValue()) == false)
+			{
+				settings->forceTeleportManual->GetValueDisplay() = false;
+				settings->forceTeleportManual->UpdateValueWithInput();
+				settings->forceTeleportForward->GetValueDisplay() = true;
+				settings->forceTeleportForward->UpdateValueWithInput();
+				lockOrThrow(messagesGUIWeak, messagesGUI);
+				messagesGUI->addMessage("Force Teleport radio button was in invalid state. \nHCM has set it to a valid state (relative)");
+			}
+
 
 			if (settings->forceTeleportManual->GetValue())
 			{
 				teleportObjectToAbsolute(settings->forceTeleportAbsoluteVec3->GetValue(), datumToTeleport);
 			}
-			else if (settings->forceTeleportForward->GetValue())
+			else 
 			{
 				teleportObjectRelativeToPlayer(settings->forceTeleportRelativeVec3->GetValue(), datumToTeleport);
 			}
-			else
-			{
-				throw HCMRuntimeException("forceTeleport settings were in an invalid state (neither enabled), try deleting HCMInternalConfig then restarting HCM");
-			}
-			
 
-			if (settings->forceTeleportForward->GetValue() && settings->forceTeleportManual->GetValue())
-			{
-				throw HCMRuntimeException("forceTeleport settings were in an invalid state (both enabled), try deleting HCMInternalConfig then restarting HCM");
-			}
 		}
 		catch (HCMRuntimeException ex)
 		{
+			ex.prepend((teleportingPlayer ? "Error teleporting player: " : "Error teleporting custom object: "));
 			runtimeExceptions->handleMessage(ex);
 		}
 
@@ -154,7 +162,8 @@ private:
 			runtimeExceptions->handleMessage(ex);
 		}
 	}
-
+	void teleportObjectToAbsolute(SimpleMath::Vector3 coords, Datum entityToTeleport); // throws HCMRuntimes
+	void teleportObjectRelativeToPlayer(SimpleMath::Vector3 coords, Datum entityToTeleport); // throws HCMRuntimes
 
 public:
 	ForceTeleportSimple(GameState game, IDIContainer& dicon)
@@ -180,18 +189,22 @@ public:
 			PLOG_ERROR << "Could not resolve getPlayerViewAngleWeak: " << ex.what();
 		}
 
-		//try
-		//{
-		//	unfreezeObjectPhysicsWeak = resolveDependentCheat(UnfreezeObjectPhysics);
-		//}
-		//catch (HCMInitException ex)
-		//{
-		//	PLOG_ERROR << "Could not resolve unfreezeObjectPhysicsWeak: " << ex.what();
-		//}
 	}
 
-	void teleportObjectToAbsolute(SimpleMath::Vector3 coords, Datum entityToTeleport); // throws HCMRuntimes
-	void teleportObjectRelativeToPlayer(SimpleMath::Vector3 coords, Datum entityToTeleport); // throws HCMRuntimes
+
+
+
+	virtual void teleportPlayerTo(SimpleMath::Vector3 position) override
+	{
+		lockOrThrow(getPlayerDatumWeak, getPlayerDatum);
+		auto playerDatum = getPlayerDatum->getPlayerDatum();
+		if (playerDatum.isNull()) throw HCMRuntimeException("Null player datum!");
+		teleportObjectToAbsolute(position, playerDatum);
+	}
+	virtual void teleportEntityTo(SimpleMath::Vector3 position, Datum entityDatum) override
+	{
+		teleportObjectToAbsolute(position, entityDatum);
+	}
 };
 
 
@@ -309,3 +322,7 @@ void ForceTeleportSimple::teleportObjectRelativeToPlayer(SimpleMath::Vector3 coo
 
 }
 
+
+
+void ForceTeleport::teleportPlayerTo(SimpleMath::Vector3 position) { return pimpl->teleportPlayerTo(position); }
+void ForceTeleport::teleportEntityTo(SimpleMath::Vector3 position, Datum entityDatum) { return pimpl->teleportEntityTo(position, entityDatum); }

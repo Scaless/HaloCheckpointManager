@@ -4,17 +4,17 @@
 #include "DIContainer.h"
 #include "MultilevelPointer.h"
 #include "InjectRequirements.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "ISharedMemory.h"
 #include "IMCCStateHook.h"
 #include "GetMCCVersion.h"
 #include "IMessagesGUI.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "MultilevelPointer.h"
 #include "SettingsStateAndEvents.h"
 #include "RuntimeExceptionHandler.h"
 #include "SettingsStateAndEvents.h"
-#include "IModalDialogRenderer.h"
+#include "ModalDialogRenderer.h"
 
 
 class DumpCheckpoint : public IOptionalCheat {
@@ -31,7 +31,7 @@ private:
 	std::shared_ptr<RuntimeExceptionHandler> runtimeExceptions;
 	std::weak_ptr<IGetMCCVersion> getMCCVerWeak;
 	std::weak_ptr<ISharedMemory> sharedMemWeak;
-	std::weak_ptr<IModalDialogRenderer> modalDialogsWeak;
+	std::weak_ptr<ModalDialogRenderer> modalDialogsWeak;
 	std::weak_ptr<SettingsStateAndEvents> settingsWeak;
 
 
@@ -73,7 +73,7 @@ private:
 			if (settings->autonameCheckpoints->GetValue() == false)
 			{
 				PLOG_DEBUG << "calling blocking func showSaveDumpNameDialog";
-				auto modalReturn = modalDialogs->showSaveDumpNameDialog("Name dumped checkpoint", checkpointName); // this is a blocking call
+				auto modalReturn = modalDialogs->showReturningDialog((ModalDialogFactory::makeCheckpointDumpNameDialog("Name dumped checkpoint", checkpointName))); // this is a blocking call
 				PLOG_DEBUG << "showSaveDumpNameDialog returned! ";
 
 				if (!std::get<bool>(modalReturn)) { PLOG_DEBUG << "User cancelled dump"; return; } // user cancelled dump
@@ -161,10 +161,10 @@ public:
 		sharedMemWeak(dicon.Resolve<ISharedMemory>()),
 		runtimeExceptions(dicon.Resolve<RuntimeExceptionHandler>()),
 		messagesGUIWeak(dicon.Resolve<IMessagesGUI>()),
-		modalDialogsWeak(dicon.Resolve<IModalDialogRenderer>()),
+		modalDialogsWeak(dicon.Resolve<ModalDialogRenderer>()),
 		settingsWeak(dicon.Resolve<SettingsStateAndEvents>())
 	{
-		auto ptr = dicon.Resolve<PointerManager>().lock();
+		auto ptr = dicon.Resolve<PointerDataStore>().lock();
 		mInjectRequirements = ptr->getData<std::shared_ptr<InjectRequirements>>("injectRequirements", game);
 		mCheckpointLength = ptr->getData< std::shared_ptr<int64_t>>("checkpointLength", game);
 		mCheckpointLocation1 = ptr->getData< std::shared_ptr<MultilevelPointer>>("checkpointLocation1", game);

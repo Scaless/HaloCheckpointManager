@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GetGameCameraData.h"
 #include "MultilevelPointer.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "DynamicStructFactory.h"
 #include "IMCCStateHook.h"
 
@@ -34,7 +34,7 @@ public:
 		:
 		MCCStateChangedCallback(dicon.Resolve<IMCCStateHook>().lock()->getMCCStateChangedEvent(), [this](const MCCState& state) { onGameStateChange(state); })
 	{
-		auto ptr = dicon.Resolve<PointerManager>().lock();
+		auto ptr = dicon.Resolve<PointerDataStore>().lock();
 		cameraDataStruct = DynamicStructFactory::make<cameraDataFields>(ptr, game);
 		cameraDataPointer = ptr->getData<std::shared_ptr<MultilevelPointer>>(nameof(cameraDataPointer), game);
 	}
@@ -61,6 +61,8 @@ public:
 
 			cacheValid = true;
 		}
+
+		if (IsBadReadPtr((void*)cachedCameraData->position, 12)) throw HCMRuntimeException(std::format("Bad read at {}", (uintptr_t)cachedCameraData->position));
 
 		return *cachedCameraData.get();
 	}

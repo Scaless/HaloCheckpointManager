@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using HCMExternal.ViewModels.Commands;
 using HCMExternal.Helpers.DictionariesNS;
-using HCMExternal.Services.MCCStateServiceNS;
 using System.Windows;
 using System.Runtime.CompilerServices;
 using System.Data.Common;
@@ -63,10 +62,12 @@ namespace HCMExternal.Services.InterprocServiceNS
         [LibraryImport("HCMInterproc.DLL")]
         private static partial void queueInjectCommand();
 
+        [LibraryImport("HCMInterproc.DLL")]
+        public static partial int getHCMInternalStatusFlag();
 
 
 
-        [DllImport("HCMInterproc.dll")] private static extern bool SetupInternal();
+        [DllImport("HCMInterproc.dll")] private static extern bool SetupInternal(UInt32 mccProcessID, StringBuilder str, int len);
 
         public InterprocService(CheckpointViewModel checkpointViewModel)
         {
@@ -244,9 +245,10 @@ namespace HCMExternal.Services.InterprocServiceNS
         }
 
 
-        public bool Setup()
+        public (bool, string) Setup(UInt32 mccProcessID)
         {
-            return SetupInternal();
+            StringBuilder sb = new StringBuilder(1000);
+            return (SetupInternal(mccProcessID, sb, sb.Capacity), sb.ToString());
         }
 
 

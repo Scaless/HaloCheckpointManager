@@ -87,3 +87,21 @@ bool CheckAccess(const void* const pAddress, size_t nSize)
 //#define IsBadWritePtr(p,n) (!CheckAccess<dwWriteRights>(p,n))
 //#define IsBadReadPtr(p,n) (!CheckAccess<dwReadRights>(p,n))
 //#define IsBadStringPtrW(p,n) (!CheckAccess<dwReadRights>(p,n*2))
+
+// convert a range of values [istart...istop] to another range [ostart...ostop]
+float remapf(float value, float istart, float istop, float ostart, float ostop);
+
+
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n)
+{
+	std::ostringstream out;
+	out.precision(n);
+	out << std::fixed << a_value;
+	return std::move(out).str();
+}
+
+// downloads text content of url to local file. Throws HCMInit on fail
+void downloadFileTo(std::string_view url, std::string_view pathToFile);
+
+std::string readFileContents(std::string_view pathToFile);

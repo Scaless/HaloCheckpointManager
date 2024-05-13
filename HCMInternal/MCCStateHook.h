@@ -2,7 +2,7 @@
 #include "ModuleHookManager.h"
 #include "MultilevelPointer.h"
 #include "GameState.h"
-#include "PointerManager.h"
+#include "PointerDataStore.h"
 #include "RuntimeExceptionHandler.h"
 #include "MCCState.h"
 #include "IMCCStateHook.h"
@@ -41,7 +41,7 @@ private:
 	std::shared_ptr<eventpp::CallbackList<void(const MCCState&)>> MCCStateChangedEvent = std::make_shared<eventpp::CallbackList<void(const MCCState&)>>();
 public:
 
-	explicit MCCStateHook(std::shared_ptr<PointerManager> ptrMan, std::shared_ptr<RuntimeExceptionHandler> exp)
+	explicit MCCStateHook(std::shared_ptr<PointerDataStore> ptrMan, std::shared_ptr<RuntimeExceptionHandler> exp)
 		: runtimeExceptions(exp),
 		currentMCCState(GameState::Value::Halo1, PlayState::MainMenu, LevelID::_map_id_halo1_pillar_of_autumn)
 	{
@@ -102,8 +102,14 @@ public:
 	virtual const MCCState& getCurrentMCCState() override { return currentMCCState; }
 	virtual bool isGameCurrentlyPlaying(GameState gameToCheck) override
 	{
+		bool out = (currentMCCState.currentGameState == gameToCheck) && (currentMCCState.currentPlayState == PlayState::Ingame);
 		PLOG_VERBOSE << "checking if game is currently playing: " << gameToCheck.toString();
 		PLOG_VERBOSE << "actual game currently playing: " << currentMCCState.currentGameState.toString();
+		PLOG_VERBOSE << "current playstate: " << magic_enum::enum_name(currentMCCState.currentPlayState);
+		PLOG_VERBOSE << "so the answer is: " << (out ? "true" : "false");
+
+
+		PLOG_VERBOSE << "called by: " << std::to_string(std::stacktrace::current().at(1));
 		return (currentMCCState.currentGameState == gameToCheck) && (currentMCCState.currentPlayState == PlayState::Ingame); 
 	}
 

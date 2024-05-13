@@ -28,6 +28,8 @@
 #include "GUIVec3.h"
 #include "GUIVec2.h"
 #include "GUIButtonAndInt.h"
+#include "GUIWaypointList.h"
+#include "GUISkullToggle.h"
 
 
 
@@ -40,14 +42,14 @@ class GUIElementConstructor::GUIElementConstructorImpl {
 private:
 	std::set<std::pair<GUIElementEnum, GameState::Value>> cacheFailedServices;
 
-	std::optional<std::shared_ptr<IGUIElement>> createGUIElementAndStoreResult(GUIElementEnum guielementenum, GameState game, std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings)
+	std::optional<std::shared_ptr<IGUIElement>> createGUIElementAndStoreResult(GUIElementEnum guielementenum, GameState game, std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, std::shared_ptr<RuntimeExceptionHandler> exp)
 	{
-		auto res = createGUIElement(guielementenum, game, guireq, fail, info, settings);
+		auto res = createGUIElement(guielementenum, game, guireq, fail, info, settings, exp);
 		if (res.has_value()) mStore->mapOfSuccessfullyConstructedGUIElements.at(game).insert(guielementenum);
 		return res;
 	}
 
-	std::optional<std::shared_ptr<IGUIElement>> createGUIElement(GUIElementEnum guielementenum, GameState game, std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings)
+	std::optional<std::shared_ptr<IGUIElement>> createGUIElement(GUIElementEnum guielementenum, GameState game, std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, std::shared_ptr<RuntimeExceptionHandler> exp)
 	{
 		if (!guireq->getSupportedGamesPerGUIElement().contains(guielementenum)) throw HCMInitException("getSupportedGamesPerGUIElement missing element, how did that even happen?");
 		if (!guireq->getSupportedGamesPerGUIElement().at(guielementenum).contains(game))
@@ -105,33 +107,9 @@ private:
 
 			typedef  std::vector<std::optional<std::shared_ptr<IGUIElement>>> headerChildElements;
 			typedef  std::vector<std::vector<std::optional<std::shared_ptr<IGUIElement>>>> vectorOfHeaderChildElements;
-#define createNestedElement(elementEnum) createGUIElementAndStoreResult(elementEnum, game, guireq, fail, info, settings) // optional nested element, recursively calls this function
+#define createNestedElement(elementEnum) createGUIElementAndStoreResult(elementEnum, game, guireq, fail, info, settings, exp) // optional nested element, recursively calls this function
 
 
-
-
-			/*
-			 
-Helper "macro" for making free Camera interpolator cases. I could've written this as a real macro, in fact I did initially, but realised pretty soon that it would've been an ABSOLUTE nightmare to debug issues with.
-So instead I just find&replace on below text with ZZname and YYtype.
-
-
-case GUIElementEnum::freeCameraZZnameYYtypeInterpolator:
-return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIComboEnumWithChildren<FreeCameraInterpolationTypesEnum>>
-	(game, ToolTipCollection("Function that controls how smoothly the camera adjusts to input"), std::nullopt, "YYtype Interpolation Style##ZZname"  settings->freeCameraZZnameYYtypeInterpolator,
-			vectorOfHeaderChildElements
-			{
-				headerChildElements{},
-				headerChildElements{createNestedElement(GUIElementEnum::freeCameraZZnameYYtypeInterpolatorLinearFactor)}
-			}
-			));
-
-case GUIElementEnum::freeCameraZZnameYYtypeInterpolatorLinearFactor:
-return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
-	(game, ToolTipCollection("0 to 1 value controlling smoothness of the input. Low values make the camera sluggish, high values make it fast and snappy."), std::nullopt, "Snap Factor##ZZnameYYtype", settings->freeCameraZZnameYYtypeInterpolatorLinearFactor));
-			
-			
-			*/
 
 
 			// ALL GUI ELEMENTS MUST HAVE A CASE HERE, TOP LEVEL OR NOT
@@ -204,6 +182,9 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 				case GUIElementEnum::showGUIFailuresGUI:
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleButton<false>>
 						(game, ToolTipCollection("Shows a modal list of optional cheat services that failed to initialise, sorted by game"), std::nullopt, "Show optional cheat service failures", settings->showGUIFailures));
+
+					
+
 
 				case GUIElementEnum::OBSBypassToggleGUI:
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<false>>
@@ -401,6 +382,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 							createNestedElement(GUIElementEnum::forceLaunchSettingsSubheading),
 							createNestedElement(GUIElementEnum::switchBSPGUI),
 							createNestedElement(GUIElementEnum::setPlayerHealthSubheadingGUI),
+							createNestedElement(GUIElementEnum::skullToggleGUI),
 						}));
 
 				case GUIElementEnum::speedhackGUI:
@@ -618,6 +600,12 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 							"Health ##setPlayerHealthValue",
 							"Shields##setPlayerHealthValue"));
 
+				case GUIElementEnum::skullToggleGUI:
+					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISkullToggle<false>>
+						(game, ToolTipCollection("Set skull state. Note that skull state is saved/loaded by checkpoints"),
+							"Skull Toggles",
+							settings));
+
 
 
 			case GUIElementEnum::overlaysHeadingGUI:
@@ -627,6 +615,9 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 							createNestedElement(GUIElementEnum::display2DInfoToggleGUI),
 							createNestedElement(GUIElementEnum::display2DInfoSettingsInfoSubheading),
 							createNestedElement(GUIElementEnum::display2DInfoSettingsVisualSubheading),
+							createNestedElement(GUIElementEnum::waypoint3DGUIToggle),
+							createNestedElement(GUIElementEnum::waypoint3DGUIList),
+							createNestedElement(GUIElementEnum::waypoint3DGUISettings),
 						}));
 
 
@@ -833,7 +824,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 							(game, ToolTipCollection(""),  "Info Font Size", settings->display2DInfoFontSize));
 
 					case GUIElementEnum::display2DInfoFontColour:
-						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIColourPickerAlpha>
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIColourPickerAlpha<true>>
 							(game, ToolTipCollection(""),  "Colour#2dinfo", settings->display2DInfoFontColour));
 
 					case GUIElementEnum::display2DInfoFloatPrecision:
@@ -843,6 +834,74 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 					case GUIElementEnum::display2DInfoOutline:
 						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<false>>
 							(game, ToolTipCollection("Adds a black outline to text (has a small negative performance impact)"), std::nullopt, "Info Font Outline", settings->display2DInfoOutline));
+
+				case GUIElementEnum::waypoint3DGUIToggle:
+					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<true>>
+						(game, ToolTipCollection("Toggles 3D waypoints"), RebindableHotkeyEnum::toggleWaypoint3D, "Custom Waypoints", settings->waypoint3DToggle));
+
+				case GUIElementEnum::waypoint3DGUIList:
+					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIWaypointList<false>>
+						(game, ToolTipCollection("List of 3D Waypoints"), settings->waypoint3DList, settings->editWaypointEvent, settings->deleteWaypointEvent, settings->addWaypointEvent, exp));
+
+
+				case GUIElementEnum::waypoint3DGUISettings:
+					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISubHeading<false>>
+						(game, ToolTipCollection("Custom Waypoint Settings"), "Custom Waypoint Settings", headerChildElements
+							{
+							createNestedElement(GUIElementEnum::waypoint3DGUIClampToggle),
+							createNestedElement(GUIElementEnum::waypoint3DGUIRenderRangeToggle),
+							createNestedElement(GUIElementEnum::waypoint3DGUIRenderRangeInput),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalSpriteColor),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalSpriteScale),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalLabelColor),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalLabelScale),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalDistanceColor),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalDistanceScale),
+							createNestedElement(GUIElementEnum::waypoint3DGUIGlobalDistancePrecision),
+							}));
+
+
+					case GUIElementEnum::waypoint3DGUIClampToggle:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<false>>
+							(game, ToolTipCollection("Clamps waypoints to the edge of the screen when you turn away from them"), std::nullopt, "Clamp to Screen", settings->waypoint3DClampToggle));
+
+
+					case GUIElementEnum::waypoint3DGUIRenderRangeToggle:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<false>>
+							(game, ToolTipCollection("Toggles disabling rendering of waypoints that are too far away"), std::nullopt, "Render Range Filter", settings->waypoint3DRenderRangeToggle));
+
+					case GUIElementEnum::waypoint3DGUIRenderRangeInput:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
+							(game, ToolTipCollection("How far away (game units) does a waypoint need to be before disabling rendering?"), "Render Range", settings->waypoint3DRenderRangeInput));
+
+					case GUIElementEnum::waypoint3DGUIGlobalSpriteColor:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIColourPickerAlpha<false>>
+							(game, ToolTipCollection("Color to apply to waypoint sprite"), "Global Sprite Color", settings->waypoint3DGlobalSpriteColor));
+
+					case GUIElementEnum::waypoint3DGUIGlobalSpriteScale:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
+							(game, ToolTipCollection("Scaling factor of waypoint sprite"), "Global Sprite Scale", settings->waypoint3DGlobalSpriteScale));
+
+					case GUIElementEnum::waypoint3DGUIGlobalLabelColor:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIColourPickerAlpha<false>>
+							(game, ToolTipCollection("Color to apply to waypoint label"), "Global Label Color", settings->waypoint3DGlobalLabelColor));
+
+					case GUIElementEnum::waypoint3DGUIGlobalLabelScale:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
+							(game, ToolTipCollection("Scaling factor of waypoint label"), "Global Label Scale", settings->waypoint3DGlobalLabelScale));
+
+					case GUIElementEnum::waypoint3DGUIGlobalDistanceColor:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIColourPickerAlpha<false>>
+							(game, ToolTipCollection("Color to apply to waypoint distance text"), "Global Distance Color", settings->waypoint3DGlobalDistanceColor));
+
+					case GUIElementEnum::waypoint3DGUIGlobalDistanceScale:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
+							(game, ToolTipCollection("Scaling factor of waypoint distance text"), "Global Distance Scale", settings->waypoint3DGlobalDistanceScale));
+
+					case GUIElementEnum::waypoint3DGUIGlobalDistancePrecision:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIInputInt>
+							(game, ToolTipCollection("Decimal precision of waypoint distance text"), "Global Distance Precision", settings->waypoint3DGlobalDistancePrecision));
+
 
 
 			case GUIElementEnum::cameraHeadingGUI:
@@ -922,6 +981,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISubHeading<false>>
 						(game, ToolTipCollection("Simple settings for Free Camera"), "Free Camera Simple Settings", headerChildElements
 							{
+								createNestedElement(GUIElementEnum::freeCameraTeleportToCamera),
 								createNestedElement(GUIElementEnum::freeCameraGameInputDisable),
 								createNestedElement(GUIElementEnum::freeCameraCameraInputDisable),
 								createNestedElement(GUIElementEnum::freeCameraUserInputCameraBindingsSubheading),
@@ -938,6 +998,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISubHeading<false>>
 						(game, ToolTipCollection("Advanced settings for Free Camera"), "Free Camera Advanced Settings", headerChildElements
 							{
+								createNestedElement(GUIElementEnum::freeCameraTeleportToCamera),
 								createNestedElement(GUIElementEnum::freeCameraHideWatermark),
 								createNestedElement(GUIElementEnum::freeCameraHideMessages),
 								createNestedElement(GUIElementEnum::freeCameraThirdPersonRendering),
@@ -950,6 +1011,11 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 								//createNestedElement(GUIElementEnum::freeCameraAnchorRotationToObjectFacing),
 								//createNestedElement(GUIElementEnum::freeCameraAnchorFOVToObjectDistance),
 							}));
+
+					case GUIElementEnum::freeCameraTeleportToCamera:
+						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleButton<true>>
+							(game, ToolTipCollection("Teleports the player to the cameras position"), RebindableHotkeyEnum::freeCameraTeleportToCameraHotkey, "Teleport to Camera", settings->freeCameraTeleportToCameraEvent));
+
 
 					case GUIElementEnum::freeCameraHideWatermark:
 						return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<false>>
@@ -1421,7 +1487,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 						{ 
 						createNestedElement(GUIElementEnum::consoleCommandGUI),
 						createNestedElement(GUIElementEnum::getObjectAddressGUI),
-						createNestedElement(GUIElementEnum::waypoint3DGUI),
+						createNestedElement(GUIElementEnum::triggerOverlayToggle),
 						}));
 
 
@@ -1434,9 +1500,10 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIInputDWORD<true>>
 						(game, ToolTipCollection("Evaluates a main object datums address, copying it to the clipboard"), "Get Object Address: ", settings->getObjectAddressDWORD, settings->getObjectAddressEvent));
 
-				case GUIElementEnum::waypoint3DGUI:
+				case GUIElementEnum::triggerOverlayToggle:
 					return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUISimpleToggle<true>>
-						(game, ToolTipCollection("Toggles 3D waypoints"), std::nullopt, "3D Waypoints", settings->waypoint3DToggle));
+						(game, ToolTipCollection("Disables game inputs while freecam active"), std::nullopt, "Trigger Overlay", settings->triggerOverlayToggle));
+
 #endif
 
 
@@ -1462,7 +1529,7 @@ return std::optional<std::shared_ptr<IGUIElement>>(std::make_shared<GUIFloat>
 	MCCProcessType mProcType;
 
 public:
-	GUIElementConstructorImpl(std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIElementStore> store, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, MCCProcessType procType)
+	GUIElementConstructorImpl(std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIElementStore> store, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, MCCProcessType procType, std::shared_ptr<RuntimeExceptionHandler> exp)
 		: mStore(store), mProcType(procType)
 	{
 		// Create all top level GUI elements. Each one will recursively create it's nested elements, if it has any.
@@ -1470,7 +1537,7 @@ public:
 		{
 
 
-			auto x = createGUIElementAndStoreResult(element, game, guireq, fail, info, settings);
+			auto x = createGUIElementAndStoreResult(element, game, guireq, fail, info, settings, exp);
 			if (x.has_value())
 			{
 				store->getTopLevelGUIElementsMutable().at(game).push_back(x.value());
@@ -1484,5 +1551,5 @@ public:
 
 
 
-GUIElementConstructor::GUIElementConstructor(std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIElementStore> store, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, MCCProcessType procType) : pimpl(std::make_unique<GUIElementConstructorImpl>(guireq, fail, store, info, settings, procType)) {}
+GUIElementConstructor::GUIElementConstructor(std::shared_ptr<IGUIRequiredServices> guireq, std::shared_ptr<OptionalCheatInfo> fail, std::shared_ptr<GUIElementStore> store, std::shared_ptr<GUIServiceInfo> info, std::shared_ptr<SettingsStateAndEvents> settings, MCCProcessType procType, std::shared_ptr<RuntimeExceptionHandler> exp) : pimpl(std::make_unique<GUIElementConstructorImpl>(guireq, fail, store, info, settings, procType, exp)) {}
 GUIElementConstructor::~GUIElementConstructor() = default;

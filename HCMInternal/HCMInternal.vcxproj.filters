@@ -68,6 +68,21 @@
     <Filter Include="Services\OptionalCheats\Implementations\3D">
       <UniqueIdentifier>{cd1cd030-f535-41e8-b94a-facc6adcd96f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Services\GUI\ModalDialogs">
+      <UniqueIdentifier>{81ff9a9b-365d-4e9d-96b9-12e59d6880b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\OptionalCheats\Implementations\Skulls">
+      <UniqueIdentifier>{3736243c-8af8-4c62-825e-52c84c5f52dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\PointerData">
+      <UniqueIdentifier>{3edcd80b-8a9c-4b7a-a3c6-1d2c522c6662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\OptionalCheats\Implementations\3D\Waypoint">
+      <UniqueIdentifier>{e748bfcf-5484-4838-9ceb-6989448f2ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\OptionalCheats\Implementations\3D\Trigger">
+      <UniqueIdentifier>{0f426aa6-70fa-45b4-b531-6866b9476161}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -100,16 +115,10 @@
     <ClInclude Include="RuntimeExceptionHandler.h">
       <Filter>Services</Filter>
     </ClInclude>
-    <ClInclude Include="PointerManager.h">
-      <Filter>Services</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleHookManager.h">
       <Filter>Services</Filter>
     </ClInclude>
     <ClInclude Include="ModuleHook.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Setting.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="MultilevelPointer.h">
@@ -382,9 +391,6 @@
     <ClInclude Include="GetCurrentLevelCode.h">
       <Filter>Services\OptionalCheats\Implementations\Services</Filter>
     </ClInclude>
-    <ClInclude Include="IModalDialogRenderer.h">
-      <Filter>Services</Filter>
-    </ClInclude>
     <ClInclude Include="GetCurrentDifficulty.h">
       <Filter>Services\OptionalCheats\Implementations\Services</Filter>
     </ClInclude>
@@ -399,9 +405,6 @@
     </ClInclude>
     <ClInclude Include="GUIAdvanceTicks.h">
       <Filter>Services\GUI\GUIElements</Filter>
-    </ClInclude>
-    <ClInclude Include="ModalDialogRenderer.h">
-      <Filter>Services\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GameTickEventHook.h">
       <Filter>Services\OptionalCheats\Implementations\Services</Filter>
@@ -620,12 +623,6 @@
     <ClInclude Include="ForceFutureCheckpoint.h">
       <Filter>Services\OptionalCheats\Implementations</Filter>
     </ClInclude>
-    <ClInclude Include="Waypoint3D.h">
-      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="WaypointList.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="Render3DEventProvider.h">
       <Filter>Services\OptionalCheats\Implementations\3D</Filter>
     </ClInclude>
@@ -634,6 +631,99 @@
     </ClInclude>
     <ClInclude Include="IRenderer3D.h">
       <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="MeasurePlayerDistanceToObject.h">
+      <Filter>Services\OptionalCheats\Implementations\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXRenderEvent.h">
+      <Filter>Services\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteResource.h">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTextHelper.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopedImFontScaler.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIWaypointList.h">
+      <Filter>Services\GUI\GUIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="ModalDialogRenderer.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckpointDumpNameDialog.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="IModalDialog.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="InjectionWarningDialog.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="FailedOptionalCheatServicesDialog.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="EditOrAddWaypointDialog.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="ModalDialogFactory.h">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialisableSetting.h">
+      <Filter>Services\SettingsStateAndEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="BinarySetting.h">
+      <Filter>Services\SettingsStateAndEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="UnarySetting.h">
+      <Filter>Services\SettingsStateAndEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="BitBoolPointer.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISkullToggle.h">
+      <Filter>Services\GUI\GUIElements</Filter>
+    </ClInclude>
+    <ClInclude Include="SkullEnum.h">
+      <Filter>Services\OptionalCheats\Implementations\Skulls</Filter>
+    </ClInclude>
+    <ClInclude Include="SkullToggler.h">
+      <Filter>Services\OptionalCheats\Implementations\Skulls</Filter>
+    </ClInclude>
+    <ClInclude Include="PointerDataStore.h">
+      <Filter>Services\PointerData</Filter>
+    </ClInclude>
+    <ClInclude Include="PointerDataGetter.h">
+      <Filter>Services\PointerData</Filter>
+    </ClInclude>
+    <ClInclude Include="PointerDataParser.h">
+      <Filter>Services\PointerData</Filter>
+    </ClInclude>
+    <ClInclude Include="PointerDataParserInstantiators.h">
+      <Filter>Services\PointerData</Filter>
+    </ClInclude>
+    <ClInclude Include="Waypoint3D.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Waypoint</Filter>
+    </ClInclude>
+    <ClInclude Include="WaypointList.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Waypoint</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerOverlay.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="GetTriggerData.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateTriggerLastChecked.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerData.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerModel.h">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -658,16 +748,10 @@
     <ClCompile Include="RuntimeExceptionHandler.cpp">
       <Filter>Services</Filter>
     </ClCompile>
-    <ClCompile Include="PointerManager.cpp">
-      <Filter>Services</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleHookManager.cpp">
       <Filter>Services</Filter>
     </ClCompile>
     <ClCompile Include="ModuleHook.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Setting.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="MultilevelPointer.cpp">
@@ -765,9 +849,6 @@
     </ClCompile>
     <ClCompile Include="AdvanceTicks.cpp">
       <Filter>Services\OptionalCheats\Implementations</Filter>
-    </ClCompile>
-    <ClCompile Include="ModalDialogRenderer.cpp">
-      <Filter>Services\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GameTickEventHook.cpp">
       <Filter>Services\OptionalCheats\Implementations\Services</Filter>
@@ -892,21 +973,78 @@
     <ClCompile Include="ForceFutureCheckpoint.cpp">
       <Filter>Services\OptionalCheats\Implementations</Filter>
     </ClCompile>
-    <ClCompile Include="Waypoint3D.cpp">
-      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
-    </ClCompile>
     <ClCompile Include="Render3DEventProvider.cpp">
       <Filter>Services\OptionalCheats\Implementations\3D</Filter>
     </ClCompile>
     <ClCompile Include="Renderer3DImpl.cpp">
       <Filter>Services\OptionalCheats\Implementations\3D</Filter>
     </ClCompile>
+    <ClCompile Include="MeasurePlayerDistanceToObject.cpp">
+      <Filter>Services\OptionalCheats\Implementations\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer3DImpl_WorldToScreen.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer3DImpl_Sprites.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteResource.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTextHelper.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="ModalDialogRenderer.cpp">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="ModalDialogFactory.cpp">
+      <Filter>Services\GUI\ModalDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="BinarySetting.cpp">
+      <Filter>Services\SettingsStateAndEvents</Filter>
+    </ClCompile>
+    <ClCompile Include="UnarySetting.cpp">
+      <Filter>Services\SettingsStateAndEvents</Filter>
+    </ClCompile>
+    <ClCompile Include="SkullToggler.cpp">
+      <Filter>Services\OptionalCheats\Implementations\Skulls</Filter>
+    </ClCompile>
+    <ClCompile Include="PointerDataGetter.cpp">
+      <Filter>Services\PointerData</Filter>
+    </ClCompile>
+    <ClCompile Include="PointerDataParser.cpp">
+      <Filter>Services\PointerData</Filter>
+    </ClCompile>
+    <ClCompile Include="PointerDataStore.cpp">
+      <Filter>Services\PointerData</Filter>
+    </ClCompile>
+    <ClCompile Include="Waypoint3D.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D\Waypoint</Filter>
+    </ClCompile>
     <ClCompile Include="WaypointList.cpp">
-      <Filter>Classes</Filter>
+      <Filter>Services\OptionalCheats\Implementations\3D\Waypoint</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerOverlay.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="GetTriggerData.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateTriggerLastChecked.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer3DImpl_updateCameraData.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer3DImpl_RenderTriggers.cpp">
+      <Filter>Services\OptionalCheats\Implementations\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="dds2.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="InternalPointerData.xml">
@@ -921,6 +1059,10 @@
   <ItemGroup>
     <Image Include="lapua.dds" />
     <Image Include="lapua2.dds" />
+    <Image Include="Waypoint3DReticle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Waypoint3DReticle.dds" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="lapua.wav">

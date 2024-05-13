@@ -212,6 +212,7 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="NtApiDotNet" Version="1.1.33" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
@@ -441,14 +442,15 @@
 	<PropertyGroup>
 		<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
 		<ApplicationIcon>HCM.ico</ApplicationIcon>
+		<BaseOutputPath></BaseOutputPath>
 	</PropertyGroup>
 	
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="powershell -ExecutionPolicy RemoteSigned $(SolutionDir)updateVersionInfo.ps1 -SolutionDir $(SolutionDir) -VersionInfo $(VersionPrefix)&#xD;&#xA; " />
+	  <Exec Command="powershell -ExecutionPolicy RemoteSigned $(SolutionDir)updateVersionInfo.ps1 -SolutionDir $(SolutionDir) -VersionInfo $(VersionPrefix) || set errorlevel=0&#xD;&#xA; " />
 	</Target>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy $(TargetDir)$(MSBuildProjectName).exe $(TargetDir)HaloCheckpointManager.exe /Y&#xD;&#xA;copy $(ProjectDir)ExternalPointerData.xml  $(OutDir)ExternalPointerData.xml /Y" />
+	  <Exec Command="copy $(TargetDir)$(MSBuildProjectName).exe $(TargetDir)HaloCheckpointManager.exe /Y || set errorlevel=0 &#xD;&#xA;copy $(ProjectDir)ExternalPointerData.xml  $(OutDir)ExternalPointerData.xml /Y || set errorlevel=0" />
 	</Target>
 
 </Project>
